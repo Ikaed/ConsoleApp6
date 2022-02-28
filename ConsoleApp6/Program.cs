@@ -52,14 +52,14 @@ class Program
 
     static void Main(string[] args)
     {
-        string userInput = "CC, NW, SE, SE, SW, NC, NC, SC, NE, CW";
+        string userInput = "CC, NW, SE, SE, SW, NC, NC, SC, NE, CW, CW, CW, CW, CE";
         //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
 
 
+       
 
-        DrawBoard();
         //int player = 2; // Player 1 Starts
         string input = "";
 
@@ -74,10 +74,10 @@ class Program
             bool playerOTurn = true;
             int countO = 0;
             int countX = 0;
-            int player = 0;
+            int player;
 
             // Kollar så att ingen av spelarna har spelat det draget som löggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
-        for (var index = 0; index < moves.Length; index++)
+            for (var index = 0; index < moves.Length; index++)
         {
             if(!movesO.Contains(moves[index]) && !movesX.Contains(moves[index]))
             {
@@ -104,11 +104,13 @@ class Program
                     }
                     playerOTurn = !playerOTurn;
             }
-        } while (turns <= 81);
-        //Om antalet turer är lika med 81 vet man att spelet har slutat lika. 81 är alltså max-antalet med turer man kan spela
+            DrawBoard();
+          
+            } while (turns <= 81);
+            //Om antalet turer är lika med 81 vet man att spelet har slutat lika. 81 är alltså max-antalet med turer man kan spela
 
 
-     
+          
 
             // for (var index = 0; index < moves.Length; index++)
             // {
@@ -128,7 +130,7 @@ class Program
 
 
 
-
+         
 
             //Egen klass som brytas ut för att returnera input för spelarens drag?
 
@@ -172,9 +174,7 @@ class Program
             //turns++;
 
             //Check Game Status.
-            HorizontalWin();
-            VerticalWin();
-            DiagonalWin();
+         
 
 
             //Kolla villkor för lika 
@@ -237,7 +237,9 @@ class Program
                     Console.WriteLine("Whoops, I didn't get that.  \nPlease try again...");
                     inputCorrect = false;
                 }
-
+                HorizontalWin();
+                VerticalWin();
+                DiagonalWin();
 
             } while (!inputCorrect);
         } while (true);
@@ -265,7 +267,7 @@ class Program
                 ArrBoard[2] = playerSignature.ToString();
                 break;
             case var _ when input.Contains("CW"):
-                // The program must not use downcasting or type checking. Är tostring downcasting?
+              
                 ArrBoard[3] = playerSignature.ToString();
                 break;
             case var _ when input.Contains("CC"):
