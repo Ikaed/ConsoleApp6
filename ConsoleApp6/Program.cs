@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 class Program
 {
@@ -44,20 +46,21 @@ class Program
         Console.WriteLine("  -------------------------");
     } //Draws the player board to terminal.  
 
-    
+
 
 
 
     static void Main(string[] args)
     {
-        string userInput = " NW .CC , NW .NW , NW . SE , CW . CC , CW .NW , CW .SE , SW .CC , SW .NW , SW . SE";
+        string userInput = "CC, NW, SE, SE, SW, NC, NC, SC, NE, CW";
+        //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
 
 
-      
 
-        int player = 2; // Player 1 Starts
+        DrawBoard();
+        //int player = 2; // Player 1 Starts
         string input = "";
 
         //skapar upp dragen
@@ -66,86 +69,117 @@ class Program
 
         //delar upp strängen som matas in för vardera spelare
         //problemet är att den sätter allt i stringen till en egen index
-
-
-        for (var index = 0; index < moves.Length; index++)
-        {
-            if (index % 2 == 0)
-            {
-                movesO.Add(moves[index]);
-
-
-            }
-            else if (index % 2 != 0)
-            {
-                movesX.Add(moves[index]);
-
-
-            }
-        }
-        
-        
-        bool inputCorrect = true;
-
-        
-        var inputX = "";
-
-
-        //Egen klass som brytas ut för att returnera input för spelarens drag?
         do //Alternates player turns.
         {
-            if (player == 1)
+            bool playerOTurn = true;
+            int countO = 0;
+            int countX = 0;
+            int player = 0;
+
+            // Kollar så att ingen av spelarna har spelat det draget som löggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
+        for (var index = 0; index < moves.Length; index++)
+        {
+            if(!movesO.Contains(moves[index]) && !movesX.Contains(moves[index]))
             {
-                player = 2;
-                foreach (var VARIABLE in movesX)
+                if (playerOTurn)
                 {
-                    Console.WriteLine(VARIABLE);
-                }
-              
-                 input = movesX.FirstOrDefault(); 
-                for (int i = movesX.Count - 1; i >= 0; i--)
+                    player = 1;
+                    movesO.Add(moves[index]);
+                    input = movesO[countO];
+                        countO++;
+                       
+                            Console.WriteLine(input + countO + "Player1");
+                        turns++;
+                        XorO(player, input);
+                    }
+                else
                 {
-                    movesX.RemoveAt(i);
-                    Console.WriteLine(movesX + "test");
-                    XorO(player, movesX);
-
-                    
-                }
-
-              
+                    player = 2;
+                    movesX.Add(moves[index]);
+                    input = movesX[countX];
+                    countX++;
+                    Console.WriteLine(input + countX + "Player2");
+                        turns++;
+                        XorO(player, input);
+                    }
+                    playerOTurn = !playerOTurn;
             }
-
-         
-            else if (player == 2)
-            {
-                player = 1;
-                foreach (var VARIABLE in movesO)
-                {
-                    Console.WriteLine(VARIABLE);
-                }
-                input = movesO.FirstOrDefault();
-                for (int i = movesO.Count - 1; i >= 0; i--)
-                {
-              
-                        movesO.RemoveAt(i);
-                    Console.WriteLine(movesO +"test");
-                    XorO(player, movesO);
-                    
-
-                }
-
-            }         
+        } while (turns <= 81);
+        //Om antalet turer är lika med 81 vet man att spelet har slutat lika. 81 är alltså max-antalet med turer man kan spela
 
 
-            DrawBoard();
-            turns++;
+     
+
+            // for (var index = 0; index < moves.Length; index++)
+            // {
+            //     if (index % 2 == 0)
+            //     {
+            //         movesO.Add(moves[index]);
+
+            //     }
+            //     else if (index % 2 != 0)
+            //     {
+            //         movesX.Add(moves[index]);
+            //     }
+            // }
+
+
+            bool inputCorrect = true;
+
+
+
+
+
+            //Egen klass som brytas ut för att returnera input för spelarens drag?
+
+
+            //if (player == 1)
+            //{
+            //    player = 2;
+
+
+            //    input = movesX.FirstOrDefault();
+            //    movesX.RemoveAt(0);
+            //    Console.WriteLine(movesX + "test");
+            //    XorO(player, movesX);
+
+
+
+
+
+            //}
+
+
+            //else if (player == 2)
+            //{
+            //    player = 1;
+
+            //    input = movesO.FirstOrDefault();
+
+
+            //    movesO.RemoveAt(0);
+            //    Console.WriteLine(movesO + "test");
+            //    XorO(player, movesO);
+
+
+
+
+            //}
+
+
+
+
+            //turns++;
 
             //Check Game Status.
             HorizontalWin();
             VerticalWin();
             DiagonalWin();
 
-            if (turns == 10)
+
+            //Kolla villkor för lika 
+
+            if (turns == 81)
             {
                 Draw();
             }
@@ -180,7 +214,7 @@ class Program
 
                 //   "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
                 
-                if ((input.Equals("NW")) && (ArrBoard[0].Equals("NW")))
+                if ((input.Equals("NW")) && (ArrBoard[0].Contains("NW")))
                     inputCorrect = true;
                 else if ((input.Equals("NC")) && (ArrBoard[1].Contains("NC")))
                     inputCorrect = true;
@@ -198,11 +232,11 @@ class Program
                     inputCorrect = true;
                 else if ((input.Equals("SE")) && (ArrBoard[8].Contains("SE")))
                     inputCorrect = true;
-                //else
-                //{
-                //    Console.WriteLine("Whoops, I didn't get that.  \nPlease try again...");
-                //    inputCorrect = false;
-                //}
+                else
+                {
+                    Console.WriteLine("Whoops, I didn't get that.  \nPlease try again...");
+                    inputCorrect = false;
+                }
 
 
             } while (!inputCorrect);
@@ -212,40 +246,41 @@ class Program
 
 
 
-    public static void XorO(int player, List<string> moves)
+    public static void XorO(int player, string input)
     {
 
         if (player == 1) playerSignature = 'X';
         else if (player == 2) playerSignature = 'O';
 
-        switch (moves)
+        switch (input)
         {
-            case var _ when moves.Contains("NW"):
+            
+            case var _ when input.Contains("NW"):
                 ArrBoard[0] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("NC"):
+            case var _ when input.Contains("NC"):
                 ArrBoard[1] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("NE"):
+            case var _ when input.Contains("NE"):
                 ArrBoard[2] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("CW"):
+            case var _ when input.Contains("CW"):
                 // The program must not use downcasting or type checking. Är tostring downcasting?
                 ArrBoard[3] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("CC"):
+            case var _ when input.Contains("CC"):
                 ArrBoard[4] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("CE"):
+            case var _ when input.Contains("CE"):
                 ArrBoard[5] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("SW"):
+            case var _ when input.Contains("SW"):
                 ArrBoard[6] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("SC"):
+            case var _ when input.Contains("SC"):
                 ArrBoard[7] = playerSignature.ToString();
                 break;
-            case var _ when moves.Contains("SE"):
+            case var _ when input.Contains("SE"):
                 ArrBoard[8] = playerSignature.ToString();
                 break;
         }
