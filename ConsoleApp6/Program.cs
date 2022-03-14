@@ -25,7 +25,7 @@ class Program
 
         ArrBoard = ArrBoardInitialize;
         DrawBoard();
-        turns = 0;
+      
     }
 
     public static void DrawBoard()
@@ -52,13 +52,16 @@ class Program
 
     static void Main(string[] args)
     {
-        string userInput = "CC, NW, SE, SE, SW, NC, NC, SC, NE, CW, CW, CW, CW, CE";
+
+        //string userInput = args[0];
+        string userInput = "NW, CC, SE, SE, SW, NC, NC, SC, NE, CW, CW, CW, CW, CE";
+        //string userInput = "NW,NC, NE, CC, CE, CW, SW, SE, SC";
         //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
 
+    
 
-       
 
         //int player = 2; // Player 1 Starts
         string input = "";
@@ -66,9 +69,10 @@ class Program
         //skapar upp dragen
         List<string> movesX = new List<string>();
         List<string> movesO = new List<string>();
-
+        
         //delar upp strängen som matas in för vardera spelare
         //problemet är att den sätter allt i stringen till en egen index
+        
         do //Alternates player turns.
         {
             bool playerOTurn = true;
@@ -76,179 +80,57 @@ class Program
             int countX = 0;
             int player;
 
-            // Kollar så att ingen av spelarna har spelat det draget som löggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
+            // Kollar så att ingen av spelarna har spelat det draget som läggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
             for (var index = 0; index < moves.Length; index++)
-        {
-            if(!movesO.Contains(moves[index]) && !movesX.Contains(moves[index]))
             {
-                if (playerOTurn)
+                if (!movesO.Contains(moves[index]) && !movesX.Contains(moves[index]))
                 {
-                    player = 1;
-                    movesO.Add(moves[index]);
-                    input = movesO[countO];
+                    if (playerOTurn)
+                    {
+                        player = 1;
+                        movesO.Add(moves[index]);
+                        input = movesO[countO];
                         countO++;
-                       
-                            Console.WriteLine(input + countO + "Player1");
+
+                        Console.WriteLine(input + countO + "Player1");
                         turns++;
-                        XorO(player, input);
+                        OorX(player, input);
                     }
-                else
-                {
-                    player = 2;
-                    movesX.Add(moves[index]);
-                    input = movesX[countX];
-                    countX++;
-                    Console.WriteLine(input + countX + "Player2");
+                    else
+                    {
+                        player = 2;
+                        movesX.Add(moves[index]);
+                        input = movesX[countX];
+                        countX++;
+                        Console.WriteLine(input + countX + "Player2");
                         turns++;
-                        XorO(player, input);
+                        OorX(player, input);
                     }
+
                     playerOTurn = !playerOTurn;
-            }
-            DrawBoard();
-          
-            } while (turns <= 81);
-            //Om antalet turer är lika med 81 vet man att spelet har slutat lika. 81 är alltså max-antalet med turer man kan spela
-
-
-          
-
-            // for (var index = 0; index < moves.Length; index++)
-            // {
-            //     if (index % 2 == 0)
-            //     {
-            //         movesO.Add(moves[index]);
-
-            //     }
-            //     else if (index % 2 != 0)
-            //     {
-            //         movesX.Add(moves[index]);
-            //     }
-            // }
-
-
-            bool inputCorrect = true;
-
-
-
-         
-
-            //Egen klass som brytas ut för att returnera input för spelarens drag?
-
-
-            //if (player == 1)
-            //{
-            //    player = 2;
-
-
-            //    input = movesX.FirstOrDefault();
-            //    movesX.RemoveAt(0);
-            //    Console.WriteLine(movesX + "test");
-            //    XorO(player, movesX);
-
-
-
-
-
-            //}
-
-
-            //else if (player == 2)
-            //{
-            //    player = 1;
-
-            //    input = movesO.FirstOrDefault();
-
-
-            //    movesO.RemoveAt(0);
-            //    Console.WriteLine(movesO + "test");
-            //    XorO(player, movesO);
-
-
-
-
-            //}
-
-
-
-
-            //turns++;
-
-            //Check Game Status.
-         
-
-
-            //Kolla villkor för lika 
-
-            if (turns == 81)
-            {
-                Draw();
-            }
-
-            
-
-            do
-            {
-
-
-                //Console.WriteLine("\nReady Player {0}: It's your move!", player);
-                //try
-                //{
-                //    //listan av drag för spelare 1 och 2
-
-                //    input = Convert.ToInt32(Console.ReadLine());
-                // foreach (var move in list of moves)
-                // plocka varannan värde från listorna av drag 
-
-                //if (player =1){
-                //get element from movesX
-                // else if (playcwer = 2){
-                //get element from movesO
-
-                //}
-                //catch
-                //{
-                //    Console.WriteLine("Please enter a number!");
-                //}
-                //inputen kommer från spelare 1 (movesX) och spelare 2 (movesO)
-                //inputen ska sedan sättas in i if satsen för att avgöra var positionen ska läggas
-
-                //   "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
-                
-                if ((input.Equals("NW")) && (ArrBoard[0].Contains("NW")))
-                    inputCorrect = true;
-                else if ((input.Equals("NC")) && (ArrBoard[1].Contains("NC")))
-                    inputCorrect = true;
-                else if ((input.Equals("NE")) && (ArrBoard[2].Contains("NE")))
-                    inputCorrect = true;
-                else if ((input.Equals("CW")) && (ArrBoard[3].Contains("CW")))
-                    inputCorrect = true;
-                else if ((input.Equals("CC")) && (ArrBoard[4].Contains("CC")))
-                    inputCorrect = true;
-                else if ((input.Equals("CE")) && (ArrBoard[5].Contains("CE")))
-                    inputCorrect = true;
-                else if ((input.Equals("SW")) && (ArrBoard[6].Contains("SW")))
-                    inputCorrect = true;
-                else if ((input.Equals("SC")) && (ArrBoard[7].Contains("SC")))
-                    inputCorrect = true;
-                else if ((input.Equals("SE")) && (ArrBoard[8].Contains("SE")))
-                    inputCorrect = true;
-                else
-                {
-                    Console.WriteLine("Whoops, I didn't get that.  \nPlease try again...");
-                    inputCorrect = false;
                 }
+
+                DrawBoard();
                 HorizontalWin();
                 VerticalWin();
                 DiagonalWin();
+                if (turns == 9)
+                {
+                    Draw();
+                }
 
-            } while (!inputCorrect);
-        } while (true);
 
+            }
+        }
+
+        while (turns <= 9);
+
+        
     } //Gameplay loop.  Controls player turns & overrides the array with players input.
 
 
-
-    public static void XorO(int player, string input)
+    //code smell?
+    public static void OorX(int player, string input)
     {
 
         if (player == 1) playerSignature = 'X';
@@ -267,7 +149,6 @@ class Program
                 ArrBoard[2] = playerSignature.ToString();
                 break;
             case var _ when input.Contains("CW"):
-              
                 ArrBoard[3] = playerSignature.ToString();
                 break;
             case var _ when input.Contains("CC"):
@@ -292,14 +173,13 @@ class Program
     public static void HorizontalWin()
     {
         char[] playerSignatures = {'X', 'O'};
-
         foreach (var playerSignature in playerSignatures)
         {
-            if (((ArrBoard[0].Equals(playerSignature)) && (ArrBoard[1].Equals(playerSignature)) && (ArrBoard[2].Equals(playerSignature)))
-                || ((ArrBoard[3].Equals(playerSignature)) && (ArrBoard[4].Equals(playerSignature)) &&
-                    (ArrBoard[5].Equals(playerSignature)))
-                || ((ArrBoard[6].Equals(playerSignature)) && (ArrBoard[7].Equals(playerSignature)) &&
-                    (ArrBoard[8].Equals(playerSignature))))
+            if (((ArrBoard[0].Contains(playerSignature)) && (ArrBoard[1].Contains(playerSignature)) && (ArrBoard[2].Contains(playerSignature)))
+                || ((ArrBoard[3].Contains(playerSignature)) && (ArrBoard[4].Contains(playerSignature)) &&
+                    (ArrBoard[5].Contains(playerSignature)))
+                || ((ArrBoard[6].Contains(playerSignature)) && (ArrBoard[7].Contains(playerSignature)) &&
+                    (ArrBoard[8].Contains(playerSignature))))
             {
                 Console.Clear();
                 if (playerSignature == 'X')
@@ -307,6 +187,7 @@ class Program
                     Console.WriteLine("Congratulations Player 1.\nYou have a achieved a horizontal win! " +
                                       "\nYou're the Tic Tac Toe Master!\n" +
                                       "\nTurns taken{0}", turns);
+
                 }
                 else if (playerSignature == 'O')
                 {
@@ -316,7 +197,7 @@ class Program
                 }
 
 
-                WinArt();
+                //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
                 BoardReset();
@@ -332,11 +213,11 @@ class Program
 
         foreach (char playerSignature in playerSignatures)
         {
-            if (((ArrBoard[0].Equals(playerSignature)) && (ArrBoard[3].Equals(playerSignature)) && (ArrBoard[6].Equals(playerSignature)))
-                || ((ArrBoard[1].Equals(playerSignature)) && (ArrBoard[4].Equals(playerSignature)) &&
-                    (ArrBoard[7].Equals(playerSignature)))
-                || ((ArrBoard[2].Equals(playerSignature)) && (ArrBoard[5].Equals(playerSignature)) &&
-                    (ArrBoard[8].Equals(playerSignature))))
+            if (((ArrBoard[0].Contains(playerSignature)) && (ArrBoard[3].Contains(playerSignature)) && (ArrBoard[6].Contains(playerSignature)))
+                || ((ArrBoard[1].Contains(playerSignature)) && (ArrBoard[4].Contains(playerSignature)) &&
+                    (ArrBoard[7].Contains(playerSignature)))
+                || ((ArrBoard[2].Contains(playerSignature)) && (ArrBoard[5].Contains(playerSignature)) &&
+                    (ArrBoard[8].Contains(playerSignature))))
             {
                 Console.Clear();
                 if (playerSignature == 'X')
@@ -350,7 +231,7 @@ class Program
                         "Player 2, that was Fantastic.\nA vertical win!\nYou're the Tic Tac Toe Master!\n");
                 }
 
-                WinArt();
+                //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
                 BoardReset();
@@ -366,9 +247,9 @@ class Program
 
         foreach (char playerSignature in playerSignatures)
         {
-            if ((ArrBoard[0].Equals(playerSignature)) && (ArrBoard[4].Equals(playerSignature)) && (ArrBoard[8].Equals(playerSignature))
-                || (ArrBoard[6].Equals(playerSignature)) && (ArrBoard[4].Equals(playerSignature)) &&
-                    (ArrBoard[2].Equals(playerSignature)))
+            if ((ArrBoard[0].Contains(playerSignature)) && (ArrBoard[4].Contains(playerSignature)) && (ArrBoard[8].Contains(playerSignature))
+                || (ArrBoard[6].Contains(playerSignature)) && (ArrBoard[4].Contains(playerSignature)) &&
+                    (ArrBoard[2].Contains(playerSignature)))
             {
                 Console.Clear();
                 if (playerSignature == 'X')
@@ -384,7 +265,7 @@ class Program
                                       "\nYou're the Tic Tac Toe Legend!\n \n \n");
                 }
 
-                WinArt();
+                //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
                 BoardReset();
@@ -394,6 +275,7 @@ class Program
         }
     } //Method is called to check for a diagonal win.
 
+    
     public static void Draw()
     {
 
@@ -405,18 +287,5 @@ class Program
 
         }
     } //Method is called to check if the game is a draw.
-
-    public static void WinArt()
-    {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(" ÛÛÛÛÛ ÛÛÛÛÛ                        ÛÛÛÛÛ   ÛÛÛ   ÛÛÛÛÛ                     ÛÛÛ ÛÛÛ     ");
-        Console.WriteLine("°°ÛÛÛ °°ÛÛÛ                        °°ÛÛÛ   °ÛÛÛ  °°ÛÛÛ                     °ÛÛÛ°ÛÛÛ     ");
-        Console.WriteLine(" °°ÛÛÛ ÛÛÛ    ÛÛÛÛÛÛ  ÛÛÛÛÛ ÛÛÛÛ    °ÛÛÛ   °ÛÛÛ   °ÛÛÛ   ÛÛÛÛÛÛ  ÛÛÛÛÛÛÛÛ  °ÛÛÛ°ÛÛÛ     ");
-        Console.WriteLine("  °°ÛÛÛÛÛ    ÛÛÛ°°ÛÛÛ°°ÛÛÛ °ÛÛÛ     °ÛÛÛ   °ÛÛÛ   °ÛÛÛ  ÛÛÛ°°ÛÛÛ°°ÛÛÛ°°ÛÛÛ °ÛÛÛ°ÛÛÛ     ");
-        Console.WriteLine("   °°ÛÛÛ    °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ     °°ÛÛÛ  ÛÛÛÛÛ  ÛÛÛ  °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ°ÛÛÛ     ");
-        Console.WriteLine("    °ÛÛÛ    °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ      °°°ÛÛÛÛÛ°ÛÛÛÛÛ°   °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °°° °°°      ");
-        Console.WriteLine("    ÛÛÛÛÛ   °°ÛÛÛÛÛÛ  °°ÛÛÛÛÛÛÛÛ       °°ÛÛÛ °°ÛÛÛ     °°ÛÛÛÛÛÛ  ÛÛÛÛ ÛÛÛÛÛ ÛÛÛ ÛÛÛ     ");
-        Console.WriteLine("    °°°°°     °°°°°°    °°°°°°°°         °°°   °°°       °°°°°°  °°°° °°°°° °°° °°°     ");
-        Console.ResetColor();
-    } //ASCII Art setup in it's own method to help keep the code tidy.  
+ 
 }
