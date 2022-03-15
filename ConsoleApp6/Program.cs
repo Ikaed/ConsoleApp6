@@ -4,11 +4,12 @@ using System.Security.Cryptography.X509Certificates;
 
 class Program
 {
-
+    //1. tic tac toe x 8
     public static char playerSignature = ' ';
 
     static int turns = 0; //Will count each turn.  Once == 10 then the game is a draw.
 
+    //Skapa upp alla bräden här
     static string[] ArrBoard =
     {
         "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
@@ -25,7 +26,7 @@ class Program
 
         ArrBoard = ArrBoardInitialize;
         DrawBoard();
-      
+
     }
 
     public static void DrawBoard()
@@ -48,8 +49,6 @@ class Program
 
 
 
-
-
     static void Main(string[] args)
     {
 
@@ -59,75 +58,78 @@ class Program
         //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
+       
 
-    
 
 
         //int player = 2; // Player 1 Starts
-        string input = "";
 
-        //skapar upp dragen
-        List<string> movesX = new List<string>();
-        List<string> movesO = new List<string>();
-        
-        //delar upp strängen som matas in för vardera spelare
-        //problemet är att den sätter allt i stringen till en egen index
-        
+
         do //Alternates player turns.
         {
-            bool playerOTurn = true;
-            int countO = 0;
-            int countX = 0;
-            int player;
 
-            // Kollar så att ingen av spelarna har spelat det draget som läggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
-            for (var index = 0; index < moves.Length; index++)
+            eligebleTile(moves);
+            DrawBoard();
+            HorizontalWin();
+            VerticalWin();
+            DiagonalWin();
+            if (turns == 9)
             {
-                if (!movesO.Contains(moves[index]) && !movesX.Contains(moves[index]))
+                Draw();
+            }
+
+
+        } while (turns <= 9);
+    }
+
+    //Gameplay loop.  Controls player turns & overrides the array with players input.
+
+
+    public static void eligebleTile(string[] moves)
+    {
+        bool playerOTurn = true;
+        int countO = 0;
+        int countX = 0;
+        int player;
+        List<string> movesX = new List<string>();
+        List<string> movesO = new List<string>();
+        string input = "";
+        //delar upp strängen som matas in för vardera spelare
+        //problemet är att den sätter allt i stringen till en egen index
+
+
+
+        // Kollar så att ingen av spelarna har spelat det draget som läggs till nu och om ingen har spelat det så lägger den till i antingen playero eller playerx
+        for (var index = 0; index < moves.Length; index++)
+        {
+            if (!movesO.Contains(moves[index]) && !movesX.Contains(moves[index])) //Metod från eligebleTile
+            {
+                if (playerOTurn)
                 {
-                    if (playerOTurn)
-                    {
-                        player = 1;
-                        movesO.Add(moves[index]);
-                        input = movesO[countO];
-                        countO++;
+                    player = 1;
+                    movesO.Add(moves[index]);
+                    input = movesO[countO];
+                    countO++;
 
-                        Console.WriteLine(input + countO + "Player1");
-                        turns++;
-                        OorX(player, input);
-                    }
-                    else
-                    {
-                        player = 2;
-                        movesX.Add(moves[index]);
-                        input = movesX[countX];
-                        countX++;
-                        Console.WriteLine(input + countX + "Player2");
-                        turns++;
-                        OorX(player, input);
-                    }
-
-                    playerOTurn = !playerOTurn;
+                    Console.WriteLine(input + countO + "Player1");
+                    turns++;
+                    OorX(player, input);
+                }
+                else
+                {
+                    player = 2;
+                    movesX.Add(moves[index]);
+                    input = movesX[countX];
+                    countX++;
+                    Console.WriteLine(input + countX + "Player2");
+                    turns++;
+                    OorX(player, input);
                 }
 
-                DrawBoard();
-                HorizontalWin();
-                VerticalWin();
-                DiagonalWin();
-                if (turns == 9)
-                {
-                    Draw();
-                }
-
-
+                playerOTurn = !playerOTurn;
             }
         }
-
-        while (turns <= 9);
-
-        
-    } //Gameplay loop.  Controls player turns & overrides the array with players input.
-
+    }
 
     //code smell?
     public static void OorX(int player, string input)
