@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -7,7 +8,7 @@ class Program
     //1. tic tac toe x 8
     //board, där smallerboard och biggerboard ärver ifrån. använder det för att sätta ihop flera små brädor till ett större
     public static char playerSignature = ' ';
-
+    static Dictionary<string, dynamic> map = new Dictionary<string, dynamic>();
     static int turns = 0; //Will count each turn.  Once == 10 then the game is a draw.
 
     //Skapa upp alla bräden här
@@ -96,23 +97,23 @@ class Program
 
     //}
 
-    public static void DrawBoard()
-    {
-        Console.Clear();
-        Console.WriteLine("  -------------------------");
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[0], ArrBoard[1], ArrBoard[2]);
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  -------------------------");
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[3], ArrBoard[4], ArrBoard[5]);
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  -------------------------");
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[6], ArrBoard[7], ArrBoard[8]);
-        Console.WriteLine("  |       |       |       |");
-        Console.WriteLine("  -------------------------");
-    } //Draws the player board to terminal.  
+    //public static void DrawBoard()
+    //{
+    //    Console.Clear();
+    //    Console.WriteLine("  -------------------------");
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[0], ArrBoard[1], ArrBoard[2]);
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  -------------------------");
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[3], ArrBoard[4], ArrBoard[5]);
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  -------------------------");
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  |   {0}   |   {1}   |   {2}   |", ArrBoard[6], ArrBoard[7], ArrBoard[8]);
+    //    Console.WriteLine("  |       |       |       |");
+    //    Console.WriteLine("  -------------------------");
+    //} //Draws the player board to terminal.  
 
 
 
@@ -164,8 +165,12 @@ class Program
         //Detta displayar alla smallboards
         Board.DisplayBoard();
 
-
+       
+        map.Add("NW", NW);
+        map.Add("NC", NC);
         
+       
+
         //int player = 2; // Player 1 Starts
 
 
@@ -173,7 +178,7 @@ class Program
         {
 
             eligebleTile(moves);
-            DrawBoard();
+            //DrawBoard();
             HorizontalWin();
             VerticalWin();
             DiagonalWin();
@@ -266,8 +271,9 @@ class Program
             switch (input)
             {
 
-                case var _ when input.Contains("NW"):
-                ArrBoard[0] = getPlayerSignature(player).ToString();
+                case var _ when input.Contains(map.FirstOrDefault(x => x.Key == "NW").Key):
+              
+                ArrBoard[1] = getPlayerSignature(player).ToString();
                     break;
                 case var _ when input.Contains("NC"):
                     ArrBoard[1] = getPlayerSignature(player).ToString();
@@ -333,6 +339,44 @@ class Program
             }
         }
     } //Method is called to check for a horizontal win.  
+
+    public static void HorizontalWinTest()
+    {
+        char[] playerSignatures = { 'X', 'O' };
+        foreach (var playerSignature in playerSignatures)
+        {
+            if (((ArrBoard[0].Contains(playerSignature)) && (ArrBoard[1].Contains(playerSignature)) && (ArrBoard[2].Contains(playerSignature)))
+                || ((ArrBoard[3].Contains(playerSignature)) && (ArrBoard[4].Contains(playerSignature)) &&
+                    (ArrBoard[5].Contains(playerSignature)))
+                || ((ArrBoard[6].Contains(playerSignature)) && (ArrBoard[7].Contains(playerSignature)) &&
+                    (ArrBoard[8].Contains(playerSignature))))
+            {
+                Console.Clear();
+                if (playerSignature == 'X')
+                {
+                    Console.WriteLine("Congratulations Player 1.\nYou have a achieved a horizontal win! " +
+                                      "\nYou're the Tic Tac Toe Master!\n" +
+                                      "\nTurns taken{0}", turns);
+
+                }
+                else if (playerSignature == 'O')
+                {
+                    Console.WriteLine("Congratulations Player 2.\nYou have a achieved a horizontal win! " +
+                                      "\nYou're the Tic Tac Toe Master!\n" +
+                                      "\nTurns taken{0}", turns);
+                }
+
+
+                //WinArt();
+                Console.WriteLine("Please press any key to reset the game");
+                Console.ReadKey();
+                //BoardReset();
+
+                break;
+            }
+        }
+    }
+
 
     public static void VerticalWin()
     {
