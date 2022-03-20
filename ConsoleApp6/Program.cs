@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 class Program
 {
     //1. tic tac toe x 8
+    //board, där smallerboard och biggerboard ärver ifrån. använder det för att sätta ihop flera små brädor till ett större
     public static char playerSignature = ' ';
 
     static int turns = 0; //Will count each turn.  Once == 10 then the game is a draw.
@@ -15,19 +16,85 @@ class Program
         "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
     }; //Global char array variable to store the players input.
 
+    //Inklistrad metoder
 
-
-    public static void BoardReset() //If this method is called then the game resets.  
+    //Interface
+    public interface IBoard
     {
-        string[] ArrBoardInitialize =
-        {
-            "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
-        };
+        void DisplayBoard();
+    }
 
-        ArrBoard = ArrBoardInitialize;
-        DrawBoard();
+
+    //Leaf
+
+    public class smallBoard : IBoard
+    {
+
+
+
+        string[] arrayBoard { get; set; }
+
+        public smallBoard() //string NW, string NC, string NE, string CW, string CC, string CE, string SW, string SC, string SE
+        {
+            this.arrayBoard = new string[] { "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE" };
+        }
+
+
+        public void DisplayBoard()
+        {
+            foreach (var item in arrayBoard)
+            {
+                Console.WriteLine(item);
+            }
+        }
+    }
+
+    //Composite aKa BigBoard
+    public class bigBoard : IBoard
+    {
+        private string Name { get; set; }
+
+        List<IBoard> smallerBoards = new List<IBoard>();
+
+        public bigBoard(string name)
+        {
+            this.Name = name;
+        }
+
+        public void addBoard(IBoard board)
+        {
+            smallerBoards.Add(board);
+        }
+
+        public void DisplayBoard()
+        {
+            Console.WriteLine(Name);
+            foreach (var item in smallerBoards)
+            {
+                item.DisplayBoard();
+            }
+        }
+
+
 
     }
+
+
+
+
+
+
+    //public static void BoardReset() //If this method is called then the game resets.  
+    //{
+    //    string[] ArrBoardInitialize =
+    //    {
+    //        "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE"
+    //    };
+
+    //    ArrBoard = ArrBoardInitialize;
+    //    DrawBoard();
+
+    //}
 
     public static void DrawBoard()
     {
@@ -53,15 +120,52 @@ class Program
     {
 
         //string userInput = args[0];
-        string userInput = "NW, CC, SE, SE, SW, NC, NC, SC, NE, CW, CW, CW, CW, CE";
-        //string userInput = "NW,NC, NE, CC, CE, CW, SW, SE, SC";
+        //string userInput = "NW.CC, NW.SE, NW.CE, NW.SW, NW.NE, NW.CE, NW.SE ,NW.SW, NW.NW, NW.NC, NW.CW, NW.SC";
+        string userInput = "NW,SC, NC, CC, NE, CE, CW, SW, SE";
         //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
-       
+
+
+        //Skapa Leaf-objects aKa smallBoard
+
+        //Toppen aKa Norr
+        IBoard NW = new smallBoard();
+        IBoard NC = new smallBoard();
+        IBoard NE = new smallBoard();
+
+        //Mitten aka Center
+        IBoard CW = new smallBoard();
+        IBoard CC = new smallBoard();
+        IBoard CE = new smallBoard();
+
+        //Botten aKa Syd
+        IBoard SW = new smallBoard();
+        IBoard SC = new smallBoard();
+        IBoard SE = new smallBoard();
 
 
 
+
+        //Skapa composite-object aKa bigBoard
+
+        bigBoard Board = new bigBoard("Big Board");
+        smallBoard Board1 = new smallBoard();
+        Board.addBoard(NW);
+        Board.addBoard(NC);
+        Board.addBoard(NE);
+        Board.addBoard(CW);
+        Board.addBoard(CC);
+        Board.addBoard(CE);
+        Board.addBoard(SW);
+        Board.addBoard(SC);
+        Board.addBoard(SE);
+
+        //Detta displayar alla smallboards
+        Board.DisplayBoard();
+
+
+        
         //int player = 2; // Player 1 Starts
 
 
@@ -84,14 +188,14 @@ class Program
 
     //Gameplay loop.  Controls player turns & overrides the array with players input.
 
-
+   
     public static void eligebleTile(string[] moves)
     {
         bool playerOTurn = true;
         int countO = 0;
         int countX = 0;
         int player;
-        List<string> movesX = new List<string>();
+    List<string> movesX = new List<string>();
         List<string> movesO = new List<string>();
         string input = "";
         //delar upp strängen som matas in för vardera spelare
@@ -114,6 +218,7 @@ class Program
                     Console.WriteLine(input + countO + "Player1");
                     turns++;
                     OorX(player, input);
+                
                 }
                 else
                 {
@@ -124,6 +229,7 @@ class Program
                     Console.WriteLine(input + countX + "Player2");
                     turns++;
                     OorX(player, input);
+                   
                 }
 
                 playerOTurn = !playerOTurn;
@@ -131,45 +237,64 @@ class Program
         }
     }
 
+
+
     //code smell?
+
+    public static char getPlayerSignature(int player) {
+        
+        if (player == 1)
+        {
+        playerSignature = 'X';
+            
+        }
+        else if (player == 2) { 
+    playerSignature = 'O';
+            
+        }
+        return playerSignature;
+    }
+
+   
+   
+    
+    //bryt ut i polymorfism, objekten kan sen kalla på respektive metod t ex nw.getPlayerSignature som innehåller en metod för att lägga till i arrayen
     public static void OorX(int player, string input)
     {
 
-        if (player == 1) playerSignature = 'X';
-        else if (player == 2) playerSignature = 'O';
 
-        switch (input)
-        {
-            
-            case var _ when input.Contains("NW"):
-                ArrBoard[0] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("NC"):
-                ArrBoard[1] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("NE"):
-                ArrBoard[2] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("CW"):
-                ArrBoard[3] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("CC"):
-                ArrBoard[4] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("CE"):
-                ArrBoard[5] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("SW"):
-                ArrBoard[6] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("SC"):
-                ArrBoard[7] = playerSignature.ToString();
-                break;
-            case var _ when input.Contains("SE"):
-                ArrBoard[8] = playerSignature.ToString();
-                break;
-        }
+            switch (input)
+            {
 
+                case var _ when input.Contains("NW"):
+                ArrBoard[0] = getPlayerSignature(player).ToString();
+                    break;
+                case var _ when input.Contains("NC"):
+                    ArrBoard[1] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("NE"):
+                    ArrBoard[2] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("CW"):
+                    ArrBoard[3] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("CC"):
+                    ArrBoard[4] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("CE"):
+                    ArrBoard[5] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("SW"):
+                    ArrBoard[6] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("SC"):
+                    ArrBoard[7] = getPlayerSignature(player).ToString();
+                break;
+                case var _ when input.Contains("SE"):
+                    ArrBoard[8] = getPlayerSignature(player).ToString();
+                break;
+            }
+        
     } //Controls if the player is X or O.
 
     public static void HorizontalWin()
@@ -202,7 +327,7 @@ class Program
                 //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
-                BoardReset();
+                //BoardReset();
 
                 break;
             }
@@ -236,7 +361,7 @@ class Program
                 //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
-                BoardReset();
+                //BoardReset();
 
                 break;
             }
@@ -256,6 +381,7 @@ class Program
                 Console.Clear();
                 if (playerSignature == 'X')
                 {
+               
                     Console.WriteLine("WOW!, player 1 that's a diagonal win! " +
                                       "\nExcellently played, it's one for the ages! " +
                                       "\nYou're the Tic Tac Toe Legend!\n \n \n");
@@ -270,7 +396,7 @@ class Program
                 //WinArt();
                 Console.WriteLine("Please press any key to reset the game");
                 Console.ReadKey();
-                BoardReset();
+                //BoardReset();
 
                 break;
             }
@@ -285,7 +411,7 @@ class Program
             Console.WriteLine("Aw gosh... it's a draw." +
                               "\nPlease press any key to reset the game and try again!");
             Console.ReadKey();
-            BoardReset();
+            //BoardReset();
 
         }
     } //Method is called to check if the game is a draw.
