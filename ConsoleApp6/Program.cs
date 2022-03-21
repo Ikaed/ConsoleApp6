@@ -10,7 +10,7 @@ class Program
     public static char playerSignature = ' ';
     static Dictionary<string, dynamic> map = new Dictionary<string, dynamic>();
     static int turns = 0; //Will count each turn.  Once == 10 then the game is a draw.
-
+   
     //Skapa upp alla bräden här
     static string[] ArrBoard =
     {
@@ -266,44 +266,56 @@ class Program
     //bryt ut i polymorfism, objekten kan sen kalla på respektive metod t ex nw.getPlayerSignature som innehåller en metod för att lägga till i arrayen
     public static void OorX(int player, string input)
     {
+        dynamic value;
+        var tempValue = input.Substring(0, 2);
+        Console.WriteLine(tempValue);
+  
+      
 
-
-            switch (input)
+        if(tempValue.Equals(map.ContainsKey))
             {
+               value = map.ContainsKey
+            }
 
-                case var _ when input.Contains(map.FirstOrDefault(x => x.Key == "NW").Key):
-              
-                ArrBoard[1] = getPlayerSignature(player).ToString();
-                    break;
-                case var _ when input.Contains("NC"):
-                    ArrBoard[1] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("NE"):
-                    ArrBoard[2] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("CW"):
-                    ArrBoard[3] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("CC"):
-                    ArrBoard[4] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("CE"):
-                    ArrBoard[5] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("SW"):
-                    ArrBoard[6] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("SC"):
-                    ArrBoard[7] = getPlayerSignature(player).ToString();
-                break;
-                case var _ when input.Contains("SE"):
-                    ArrBoard[8] = getPlayerSignature(player).ToString();
-                break;
+
+            //switch (input)
+            //{
+
+            //    case var _ when input.Contains(map.FirstOrDefault(i => i.Key == "NW").Key):
+            //        var test = map.TryGetValue("NW", out valuetttt);
+
+            //        ArrBoard[1] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("NC"):
+            //        ArrBoard[1] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("NE"):
+            //        ArrBoard[2] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("CW"):
+            //        ArrBoard[3] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("CC"):
+            //        ArrBoard[4] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("CE"):
+            //        ArrBoard[5] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("SW"):
+            //        ArrBoard[6] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("SC"):
+            //        ArrBoard[7] = getPlayerSignature(player).ToString();
+            //        break;
+            //    case var _ when input.Contains("SE"):
+            //        ArrBoard[8] = getPlayerSignature(player).ToString();
+            //        break;
+            //}
             }
         
     } //Controls if the player is X or O.
 
-    public static void HorizontalWin()
+    public static void HorizontalWin() //Dictionary<string, dynamic> map
     {
         char[] playerSignatures = {'X', 'O'};
         foreach (var playerSignature in playerSignatures)
