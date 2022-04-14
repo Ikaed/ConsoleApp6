@@ -33,14 +33,16 @@ class Program
 
 
 
-        string[] arrayBoard { get; set; }
+        public string[] arrayBoard { get; set; }
 
-        public smallBoard() //string NW, string NC, string NE, string CW, string CC, string CE, string SW, string SC, string SE
-        {
+        public smallBoard(string[] arrayBoard) {  //string NW, string NC, string NE, string CW, string CC, string CE, string SW, string SC, string SE
+        
             this.arrayBoard = new string[] { "NW", "NC", "NE", "CW", "CC", "CE", "SW", "SC", "SE" };
         }
 
 
+
+        //displayar bara
         public void DisplayBoard()
         {
             foreach (var item in arrayBoard)
@@ -53,13 +55,15 @@ class Program
     //Composite aKa BigBoard
     public class bigBoard : IBoard
     {
-        private string Name { get; set; }
+      
 
         List<IBoard> smallerBoards = new List<IBoard>();
 
-        public bigBoard(string name)
+       
+
+        public bigBoard(List<IBoard> smallerBoards)
         {
-            this.Name = name;
+            this.smallerBoards = smallerBoards;
         }
 
         public void addBoard(IBoard board)
@@ -69,7 +73,7 @@ class Program
 
         public void DisplayBoard()
         {
-            Console.WriteLine(Name);
+          
             foreach (var item in smallerBoards)
             {
                 item.DisplayBoard();
@@ -122,7 +126,7 @@ class Program
 
         //string userInput = args[0];
         //string userInput = "NW.CC, NW.SE, NW.CE, NW.SW, NW.NE, NW.CE, NW.SE ,NW.SW, NW.NW, NW.NC, NW.CW, NW.SC";
-        string userInput = "NW,SC, NC, CC, NE, CE, CW, SW, SE";
+        string userInput = "NW.SC,SC.NW, NC.NE";
         //string userInput = " NW.CC, NC.CC, NW.NW, NE.CC, NW.SE, CE.CC, CW.CC, SE.CC, CW.NW, CC.CC, CW.SE, CC.NW, CC.SE, CE.NW, SW.CC, CE.SE, SW.NW, SE.SE, SW.SE";
         userInput = string.Concat(userInput.Where(c => !char.IsWhiteSpace(c)));
         string[] moves = userInput.Split(',');
@@ -150,8 +154,8 @@ class Program
 
         //Skapa composite-object aKa bigBoard
 
-        bigBoard Board = new bigBoard("Big Board");
-        smallBoard Board1 = new smallBoard();
+        bigBoard Board = new bigBoard(<List> small);
+    
         Board.addBoard(NW);
         Board.addBoard(NC);
         Board.addBoard(NE);
@@ -166,11 +170,13 @@ class Program
         Board.DisplayBoard();
 
        
+
         map.Add("NW", NW);
         map.Add("NC", NC);
-        
-       
+        map.Add("NE", NE);
+        map.Add("CW", CC);
 
+        
         //int player = 2; // Player 1 Starts
 
 
@@ -220,6 +226,7 @@ class Program
                     input = movesO[countO];
                     countO++;
 
+
                     Console.WriteLine(input + countO + "Player1");
                     turns++;
                     OorX(player, input);
@@ -260,60 +267,90 @@ class Program
         return playerSignature;
     }
 
-   
-   
-    
+
+
+
     //bryt ut i polymorfism, objekten kan sen kalla på respektive metod t ex nw.getPlayerSignature som innehåller en metod för att lägga till i arrayen
     public static void OorX(int player, string input)
     {
-        dynamic value;
+
+        object value;
         var tempValue = input.Substring(0, 2);
+        var tempString = input.Substring(3);
+        Console.WriteLine(tempString);
         Console.WriteLine(tempValue);
-  
-      
-
-        if(tempValue.Equals(map.ContainsKey))
-            {
-               value = map.ContainsKey
+        foreach (var item in map)
+        {
+            if (tempValue.Equals(item.Key))
+                {
+                map.TryGetValue(item.Key, out value);
+                Console.WriteLine(value);
+                
             }
+            
+            //if (tempValue.Equals(item.Key)) { 
 
 
-            //switch (input)
+            //switch (tempValue, tempString)
             //{
-
-            //    case var _ when input.Contains(map.FirstOrDefault(i => i.Key == "NW").Key):
-            //        var test = map.TryGetValue("NW", out valuetttt);
+            //    case var _ when tempValue.Contains(item.Key):
 
             //        ArrBoard[1] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("NC"):
-            //        ArrBoard[1] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("NE"):
-            //        ArrBoard[2] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("CW"):
-            //        ArrBoard[3] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("CC"):
-            //        ArrBoard[4] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("CE"):
-            //        ArrBoard[5] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("SW"):
-            //        ArrBoard[6] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("SC"):
-            //        ArrBoard[7] = getPlayerSignature(player).ToString();
-            //        break;
-            //    case var _ when input.Contains("SE"):
-            //        ArrBoard[8] = getPlayerSignature(player).ToString();
             //        break;
             //}
-            }
+        }
+    }
+                      
+            
+                //måste kolla värdet i lilla brädet efter koordinaterna
+                //if (tempString.Contains())
+                //{
+                  
+                    
+                //    ArrBoard[1] = getPlayerSignature(player).ToString();
+                //}
+            
+        //}
+     
+
+
+
+        //switch (input)
+        //{
+
+        //    case var _ when input.Contains("NW"):
+           
+
+        //        ArrBoard[1] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("NC"):
+        //        ArrBoard[1] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("NE"):
+        //        ArrBoard[2] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("CW"):
+        //        ArrBoard[3] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("CC"):
+        //        ArrBoard[4] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("CE"):
+        //        ArrBoard[5] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("SW"):
+        //        ArrBoard[6] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("SC"):
+        //        ArrBoard[7] = getPlayerSignature(player).ToString();
+        //        break;
+        //    case var _ when input.Contains("SE"):
+        //        ArrBoard[8] = getPlayerSignature(player).ToString();
+        //        break;
+        //}
+    //}
         
-    } //Controls if the player is X or O.
+     //Controls if the player is X or O.
 
     public static void HorizontalWin() //Dictionary<string, dynamic> map
     {
